@@ -1,0 +1,19 @@
+Insert company before you enter department: 
+
+INSERT INTO public.department(
+	id, dept_location, dept_name, company)
+	VALUES (2, 'siouxfalls', 'landscaping', 1);
+    
+    INSERT INTO public.company(
+	id, domain, location, name, year)
+	VALUES (2, 'banking', 'Dallas', 'BOA', 1973);
+    
+    insert team to insert to employee: 
+    
+    INSERT INTO public.team(
+	id, team_manager, team_members, team_name, department)
+	VALUES (1, 'john', 7, 'dragon7', 1);
+    
+    INSERT INTO public.employee(
+	id, address, age, lead, name)
+	VALUES (1, '123 solly street', '29','param', 'wills');
