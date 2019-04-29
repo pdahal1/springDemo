@@ -1,9 +1,11 @@
 package com.luv2code.springboot.demo.springdemo.controller;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.luv2code.springboot.demo.springdemo.dao.CompanyRepository;
 import com.luv2code.springboot.demo.springdemo.entity.Company;
@@ -28,26 +31,20 @@ public class CompanyController {
 		return companyRepository.findAll();
 	}
 
-	@GetMapping("/companies/{companyId}")
-	public Company getCompany(@PathVariable int companyId) {
-		Optional<Company> theCompany = companyRepository.findById(companyId);
-		Company tc = null;
-		if (theCompany.isPresent()) {
-			tc = theCompany.get();
-		} else {
-			throw new RuntimeException("CompanyId is not found __________" + companyId);
-
-		}
-		return tc;
+	@GetMapping("/companies/{id}")
+	public Company findById(@PathVariable int id) {
+		Optional <Company> optCompany= companyRepository.findById(id);
+		if(!optCompany.isPresent())
+			throw new RuntimeException("Could't find the id to retrive the detail");
+		return optCompany.get();
+		
 	}
 
 	@PostMapping("/companies")
-	public Company addCompany(@RequestBody Company theCompany) {
-		// if the usr pass an Id of 0 in the Json format , set the Id =0
-		// else if save it as update of the Id
-		theCompany.setId(0);
-		companyRepository.save(theCompany);
-		return theCompany;
+	public ResponseEntity<Object> addCompany(@RequestBody Company theCompany){
+		Company saveCompany=companyRepository.save(theCompany);
+		URI location= ServletUriComponentsBuilder.fromCurrentRequest().path("/id").buildAndExpand(saveCompany.getId()).toUri();
+		return ResponseEntity.created(location).build();
 	}
 
 	@PutMapping("/companies")
